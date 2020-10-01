@@ -1,0 +1,42 @@
+[server]
+port=8080
+
+[mysql]
+enable = false
+# <user>[:password]@tcp(address)/<Database>
+# address: host[:port] | /path/to/unix/socket/file
+dsn="<user>[:password]@tcp(localhost)/<Database>"
+maxIdleConns=0
+maxOpenConns=50
+
+[mongodb]
+enable = false
+url="mongodb://localhost:27017"
+
+[jwt]
+headerName = "token"
+# key to sign jwt
+key="<secret key>"
+# token 过期时间，单位小时；为零时表示不过期
+exp = 24
+
+[tls]
+enable = false
+certFile = "cert.pem"
+keyFile = "cert.key"
+
+[log]
+# available values :"debug" "info" "error" "fatal" "panic"
+level = "debug"
+# logfile = "clashsub.log"
+logfile = ""
+showFullTime = true
+reportCaller = false
+
+[cors]
+# "*" means allow all origins
+allowOrigins = [ "*" ]
+allowMethods = [ "GET", "POST" ]
+allowHeaders = [ "Origin", "Content-Length", "Content-Type" ]
+# unit: second
+maxAge = 43200
