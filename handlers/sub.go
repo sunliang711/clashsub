@@ -38,6 +38,13 @@ func Sub(ctx *gin.Context) {
 		return
 	}
 
+	if viper.GetString("configs."+port+".server") == "" {
+		msg := fmt.Sprintf("no such port: %v", port)
+		logrus.Errorf(msg)
+		ctx.String(200, msg)
+		return
+	}
+
 	cfg := &serverConfig{
 		Server:   viper.GetString("configs." + port + ".server"),
 		Port:     port,
