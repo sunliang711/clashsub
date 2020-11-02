@@ -79,9 +79,10 @@ stop(){
 }
 
 _deploy(){
-    echo "create ssh tunnel with remotePort: ${remoteHost} remotePort: ${remotePort}..."
+    echo "create ssh tunnel with remoteHost: ${remoteHost} remotePort: ${remotePort}..."
     ssh -p 2000 -Nf -g -R ${remotePort}:localhost:${localPort} eagle@${remoteHost} && echo "Done."
 }
+
 _undeploy(){
     pid="$(ps aux | grep 'ssh' | grep localhost:${localPort})"
     if [ -z "${pid}" ];then
