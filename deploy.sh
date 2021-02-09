@@ -64,7 +64,7 @@ fi
 ###############################################################################
 # TODO
 remoteHost=aliyun.eagle711.win
-remotePort=9988
+remotePort=5600
 localPort=8080
 
 start(){

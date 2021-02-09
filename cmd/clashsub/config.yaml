@@ -1,0 +1,54 @@
+server:
+  port: 3003
+  template: config.tmpl
+
+configs:
+    8000:
+        server: proxy.gitez.cc
+        ciphoer: aes-256-cfb
+        password: 8000
+    8001:
+        server: proxy.gitez.cc
+        cipher: aes-256-cfb
+        password: 8001b
+    8002:
+        server: proxy.gitez.cc
+        cipher: aes-256-cfb
+        password: 8002
+    8003:
+        server: proxy.gitez.cc
+        cipher: aes-256-cfb
+        password: aaxc8003!!
+    8004:
+        server: proxy.gitez.cc
+        cipher: aes-256-cfb
+        password: 8004d
+    8005:
+        server: proxy.gitez.cc
+        cipher: aes-256-cfb
+        password: 8005e
+    8006:
+        server: proxy.gitez.cc
+        cipher: aes-256-cfb
+        password: 8006f
+
+mysql:
+  enable: false
+  dsn: <user>[:password]@tcp(localhost)/
+  maxIdleConns: 0
+  maxOpenConns: 50
+mongodb:
+  enable: false
+  url: mongodb://localhost:27017
+
+log:
+  level: debug
+  logfile: ''
+  showFullTime: true
+  reportCaller: false
+
+cors:
+  allowOrigins: ['*']
+  allowMethods: [ 'GET', 'POST']
+  allowHeaders: ['Origin', 'Content-Length', 'Content-Type']
+  maxAge: 43200

@@ -4,37 +4,37 @@ port=8080
 template="config.tmpl"
 [configs]
     [configs.8000]
-    server="sh.eagle711.win"
+    server="proxy.gitez.cc"
     cipher="aes-256-cfb"
     password="8000"
 
     [configs.8001]
-    server="sh.eagle711.win"
+    server="proxy.gitez.cc"
     cipher="aes-256-cfb"
     password="8001b"
 
     [configs.8002]
-    server="sh.eagle711.win"
+    server="proxy.gitez.cc"
     cipher="aes-256-cfb"
     password="8002"
 
     [configs.8003]
-    server="sh.eagle711.win"
+    server="proxy.gitez.cc"
     cipher="aes-256-cfb"
     password="aaxc8003!!"
 
     [configs.8004]
-    server="sh.eagle711.win"
+    server="proxy.gitez.cc"
     cipher="aes-256-cfb"
     password="8004d"
 
     [configs.8005]
-    server="sh.eagle711.win"
+    server="proxy.gitez.cc"
     cipher="aes-256-cfb"
     password="8005e"
 
     [configs.8006]
-    server="sh.eagle711.win"
+    server="proxy.gitez.cc"
     cipher="aes-256-cfb"
     password="8006f"
 
