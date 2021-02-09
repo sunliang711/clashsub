@@ -5,7 +5,7 @@ server:
 configs:
     8000:
         server: proxy.gitez.cc
-        ciphoer: aes-256-cfb
+        cipher: aes-256-cfb
         password: 8000
     8001:
         server: proxy.gitez.cc
