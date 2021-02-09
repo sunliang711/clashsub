@@ -89,30 +89,35 @@ fi
 # TODO
 link="https://source711.oss-cn-shanghai.aliyuncs.com/clashsub/clashsub.tar.bz2"
 
-instal(){
+install(){
     local installDir=${1:?'missing instal location'}
     if [ ! -d ${installDir} ];then
         echo "${installDir} not exist!"
-        exit 1
+	mkdir -p ${installDir}
     fi
 
     installDir=$(cd ${installDir} && pwd)
-    clashsubRoot=${installDir}/clashsub
-    mkdir ${clashsubRoot}
+    echo "Install dir: ${installDir}"
 
     local downloadDir=/tmp/clashSub
+    [ ! -d ${downloadDir} ] && mkdir ${downloadDir}
     cd ${downloadDir}
     curl -LO ${link}
     tarName=${link##*/}
-    tar -C ${clashsubRoot} xvf ${tarName}
+    echo "tarName: ${tarName}"
+    echo "Extract clashsub to ${installDir} ..."
+    ls -l ${tarName}
+    tar -C ${installDir} -xjvf ${tarName}
 
-    local start="${clashsubRoot}/clashsub -c config.yaml"
-    local pwd=${clashsubRoot}
+    local start="${installDir}/clashsub/clashsub -c config.yaml"
+    local pwd=${installDir}/clashsub
     cd ${this}
     sed -e "s|<START>|${start}|g" \
         -e "s|<PWD>|${pwd}|g" \
         clashsub.service >/tmp/clashsub.service
     _runAsRoot "mv /tmp/clashsub.service /etc/systemd/system"
+    _runAsRoot "systemctl daemon-reload"
+    _runAsRoot "systemctl enable --now clashsub"
 }
 
 em(){
