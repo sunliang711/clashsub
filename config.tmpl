@@ -53,17 +53,26 @@ cfw-bypass:
   - <local>
 cfw-latency-timeout: 5000
 proxies:
-  - name:  ss1
-    type: ss
-    server: {{.Server}}
-    port: {{.Port}}
-    cipher: {{.Cipher}}
-    password: {{.Password}}
-    udp: true
+{{- range $index, $ele := .}}
+  - name: {{$ele.Name}}
+    type: {{$ele.Type}}
+    server: {{$ele.Server}}
+    port: {{$ele.Port}}
+    cipher: {{$ele.Cipher}}
+    password: {{$ele.Password}}
+    udp: {{$ele.UDP}}
+{{- end}}
+  # - name:  ss1
+    # type: ss
+    # server: .Server
+    # port: .Port
+    # cipher: .Cipher
+    # password: .Password
+    # udp: true
     # plugin: obfs
     # plugin-opts:
-    #   mode: http
-    #   host: b94a935b474f.doload.micsoft.com
+    # mode: http
+    # host: b94a935b474f.doload.micsoft.com
 
   # socks5
   # - name: "socks5 example"
@@ -102,7 +111,20 @@ proxy-groups:
   - name: Nexitally
     type: select
     proxies:
-      -  ss1
+      - auto
+{{- range $index, $ele := .}}
+      - {{$ele.Name}}
+{{- end}}
+
+  - name: auto
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    proxies:
+{{- range $index, $ele := .}}
+      - {{$ele.Name}}
+{{- end}}
+
   - name:  Apple
     type: select
     proxies:
