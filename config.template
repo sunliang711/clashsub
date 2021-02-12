@@ -116,16 +116,16 @@ proxy-groups:
     interval: 300
     proxies:
 {{- range $index, $ele := .Shadowsocks}}
-      - {{$ele.User}}
+      - {{$ele.Tag}}
 {{- end}}
 {{- range $index, $ele := .Vmess}}
-      - {{$ele.User}}
+      - {{$ele.Tag}}
 {{- end}}
 {{- range $index, $ele := .Http}}
-      - {{$ele.User}}
+      - {{$ele.Tag}}
 {{- end}}
 {{- range $index, $ele := .Socks5}}
-      - {{$ele.User}}
+      - {{$ele.Tag}}
 {{- end}}
 
   - name:  Apple
