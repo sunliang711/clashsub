@@ -90,7 +90,7 @@ dir=clashsub
 build(){
     echo "Build clashsub..."
     mkdir $dir
-    cp config.tmpl $dir
+    cp config.template $dir
     cp cmd/clashsub/config.yaml $dir
 
     cd ${this}
