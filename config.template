@@ -78,6 +78,7 @@ proxies:
     type: vmess
     server: {{$ele.Server}}
     port: {{$ele.Port}}
+    cipher: {{$ele.Cipher}}
     uuid: {{$ele.UUID}}
     alterId: {{$ele.AlterID}}
     network: {{$ele.Network}}
@@ -85,6 +86,7 @@ proxies:
 {{- range $index, $ele := .Http}}
   - name: "{{$ele.Tag}}"
     server: {{$ele.Server}}
+    type: http
     port: {{$ele.Port}}
     {{- if $ele.Username}}
     username: {{$ele.Username}}
@@ -100,12 +102,15 @@ proxy-groups:
 {{- range $index, $ele := .Shadowsocks}}
       - "{{$ele.Tag}}"
 {{- end}}
+
 {{- range $index, $ele := .Vmess}}
       - "{{$ele.Tag}}"
 {{- end}}
+
 {{- range $index, $ele := .Http}}
       - "{{$ele.Tag}}"
 {{- end}}
+
 {{- range $index, $ele := .Socks5}}
       - "{{$ele.Tag}}"
 {{- end}}
@@ -116,16 +121,19 @@ proxy-groups:
     interval: 300
     proxies:
 {{- range $index, $ele := .Shadowsocks}}
-      - {{$ele.Tag}}
+      - "{{$ele.Tag}}"
 {{- end}}
+
 {{- range $index, $ele := .Vmess}}
-      - {{$ele.Tag}}
+      - "{{$ele.Tag}}"
 {{- end}}
+
 {{- range $index, $ele := .Http}}
-      - {{$ele.Tag}}
+      - "{{$ele.Tag}}"
 {{- end}}
+
 {{- range $index, $ele := .Socks5}}
-      - {{$ele.Tag}}
+      - "{{$ele.Tag}}"
 {{- end}}
 
   - name:  Apple
