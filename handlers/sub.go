@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/gin-gonic/gin"
@@ -11,74 +12,159 @@ import (
 )
 
 var (
-	tmpl *template.Template
+	tmpl     *template.Template
+	inbounds Inbounds
 )
 
-func InitTemplate() {
-	var err error
-	tmpl, err = template.ParseFiles(viper.GetString("server.template"))
-	if err != nil {
-		logrus.Fatalf("parse template filer: %v error: %v", viper.GetString("template.template"), err)
-	}
-}
-
-type serverConfig struct {
-	Name     string
-	Type     string
+type Shadowsocks struct {
+	User     string
+	Tag      string
 	Server   string
 	Port     string
 	Cipher   string
 	Password string
 	UDP      bool
+	Sub      bool
+}
+
+type Vmess struct {
+	User    string
+	Tag     string
+	Server  string
+	Port    string
+	UUID    string
+	AlterID string
+	Network string
+	Sub     bool
+}
+
+type Socks5 struct {
+	User     string
+	Tag      string
+	Server   string
+	Port     string
+	UDP      bool
+	Auth     string
+	Username string
+	Password string
+	Sub      bool
+}
+
+type Http struct {
+	User     string
+	Tag      string
+	Server   string
+	Port     string
+	Username string
+	Password string
+	Sub      bool
+}
+
+type Inbounds struct {
+	Vmess       []Vmess
+	Shadowsocks []Shadowsocks
+	Http        []Http
+	Socks5      []Socks5
+}
+
+func Init() {
+	var err error
+	tmpl, err = template.ParseFiles(viper.GetString("server.template"))
+	if err != nil {
+		logrus.Fatalf("parse template filer: %v error: %v", viper.GetString("template.template"), err)
+	}
+	err = viper.UnmarshalKey("inbounds", &inbounds)
+	if err != nil {
+		msg := fmt.Sprintf("Unmarshal inbounds error: %v", err)
+		logrus.Fatalf(msg)
+	}
 }
 
 func Sub(ctx *gin.Context) {
-	port := ctx.Param("port")
-	if len(port) == 0 {
-		msg := fmt.Sprintf("no port specified")
+	user := ctx.Param("user")
+	if len(user) == 0 {
+		msg := fmt.Sprintf("no user specified")
 		logrus.Error(msg)
 		ctx.String(200, msg)
 		return
 	}
 
-	// if viper.GetString("configs."+port) == "" {
-	// 	msg := fmt.Sprintf("no such port: %v", port)
-	// 	logrus.Errorf(msg)
-	// 	ctx.String(200, msg)
-	// 	return
-	// }
+	// Port
+	var (
+		http        []Http
+		vmess       []Vmess
+		shadowsocks []Shadowsocks
+		socks5      []Socks5
+	)
+	for i := range inbounds.Http {
+		fields := strings.Split(inbounds.Http[i].Tag, ":")
+		if len(fields) < 3 {
+			logrus.Fatalf("Http tag format incorrect")
+		}
+		inbounds.Http[i].Port = fields[1]
 
-	var serverConfigs []serverConfig
-	err := viper.UnmarshalKey("configs."+port, &serverConfigs)
-	if err != nil {
-		msg := fmt.Sprintf("Unmarshal configs.%v error: %v", port, err)
+		if inbounds.Http[i].User == user && inbounds.Http[i].Sub {
+			http = append(http, inbounds.Http[i])
+		}
+	}
+	for i := range inbounds.Vmess {
+		fields := strings.Split(inbounds.Vmess[i].Tag, ":")
+		if len(fields) < 3 {
+			logrus.Fatalf("Vmess tag format incorrect")
+		}
+		inbounds.Vmess[i].Port = fields[1]
+
+		if inbounds.Vmess[i].User == user && inbounds.Vmess[i].Sub {
+			vmess = append(vmess, inbounds.Vmess[i])
+		}
+	}
+	for i := range inbounds.Shadowsocks {
+		fields := strings.Split(inbounds.Shadowsocks[i].Tag, ":")
+		if len(fields) < 3 {
+			logrus.Fatalf("Shadowsocks tag format incorrect")
+		}
+		inbounds.Shadowsocks[i].Port = fields[1]
+
+		if inbounds.Shadowsocks[i].User == user && inbounds.Shadowsocks[i].Sub {
+			shadowsocks = append(shadowsocks, inbounds.Shadowsocks[i])
+		}
+	}
+	for i := range inbounds.Socks5 {
+		fields := strings.Split(inbounds.Socks5[i].Tag, ":")
+		if len(fields) < 3 {
+			logrus.Fatalf("Socks5 tag format incorrect")
+		}
+		inbounds.Socks5[i].Port = fields[1]
+
+		if inbounds.Socks5[i].User == user && inbounds.Socks5[i].Sub {
+			socks5 = append(socks5, inbounds.Socks5[i])
+		}
+	}
+
+	if len(vmess) == 0 && len(shadowsocks) == 0 && len(socks5) == 0 && len(http) == 0 {
+		msg := fmt.Sprintf("No such sub with user: %v", user)
 		logrus.Errorf(msg)
 		ctx.String(200, msg)
 		return
 	}
-	if len(serverConfigs) == 0 {
-		msg := fmt.Sprintf("No config with: %v", port)
-		logrus.Warnf(msg)
-		ctx.String(200, msg)
-		return
+
+	subInbounds := Inbounds{
+		Vmess:       vmess,
+		Shadowsocks: shadowsocks,
+		Socks5:      socks5,
+		Http:        http,
 	}
-	// cfg := &serverConfig{
-	// 	Server:   viper.GetString("configs." + port + ".server"),
-	// 	Port:     port,
-	// 	Cipher:   viper.GetString("configs." + port + ".cipher"),
-	// 	Password: viper.GetString("configs." + port + ".password"),
-	// }
+
+	logrus.Debugf("inbounds: %+v", subInbounds)
+
 	var buf bytes.Buffer
-	err = tmpl.Execute(&buf, serverConfigs)
+	err := tmpl.Execute(&buf, &subInbounds)
 	if err != nil {
 		msg := fmt.Sprintf("execute template error: %v", err)
 		logrus.Error(msg)
 		ctx.String(200, msg)
 		return
 	}
-	// ctx.Header("Content-Type", "text/yaml")
-	// ctx.Header("Connection", "keep-alive")
 	s := buf.String()
-	// ctx.Header("Content-Length", fmt.Sprintf("%d", len(s)))
 	ctx.String(200, s)
 }

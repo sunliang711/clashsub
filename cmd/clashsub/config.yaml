@@ -1,113 +1,131 @@
 server:
   port: 3003
-  template: config.tmpl
+  template: config.template
 
-configs:
-    8000:
-        - name: ss8000
-          type: ss
-          server: proxy.gitez.cc
-          port: 8000
-          cipher: aes-256-cfb
-          password: 8000
-          udp: true
-        - name: ss7000
-          type: ss
-          server: proxy.gitez.cc
-          port: 7000
-          cipher: aes-256-cfb
-          password: 7000
-          udp: true
-    8001:
-        - name: ss8001
-          type: ss
-          server: proxy.gitez.cc
-          port: 8001
-          cipher: aes-256-cfb
-          password: 8001b
-          udp: true
-        - name: ss7001
-          type: ss
-          server: proxy.gitez.cc
-          port: 7001
-          cipher: aes-256-cfb
-          password: 7001b
-          udp: true
-    8002:
-        - name: ss8002
-          type: ss
-          server: proxy.gitez.cc
-          port: 8002
-          cipher: aes-256-cfb
-          password: 8002
-          udp: true
-        - name: ss7002
-          type: ss
-          server: proxy.gitez.cc
-          port: 7002
-          cipher: aes-256-cfb
-          password: 7002
-          udp: true
-    8003:
-        - name: ss8003
-          type: ss
-          server: proxy.gitez.cc
-          port: 8003
-          cipher: aes-256-cfb
-          password: aaxc8003!!
-          udp: true
-        - name: ss7003
-          type: ss
-          server: proxy.gitez.cc
-          port: 7003
-          cipher: aes-256-cfb
-          password: aaxc7003!!
-          udp: true
-    8004:
-        - name: ss8004
-          type: ss
-          server: proxy.gitez.cc
-          port: 8004
-          cipher: aes-256-cfb
-          password: 8004d
-          udp: true
-        - name: ss7004
-          type: ss
-          server: proxy.gitez.cc
-          port: 7004
-          cipher: aes-256-cfb
-          password: 7004d
-          udp: true
-    8005:
-        - name: ss8005
-          type: ss
-          server: proxy.gitez.cc
-          port: 8005
-          cipher: aes-256-cfb
-          password: 8005e
-          udp: true
-        - name: ss7005
-          type: ss
-          server: proxy.gitez.cc
-          port: 7005
-          cipher: aes-256-cfb
-          password: 7005e
-          udp: true
-    8006:
-        - name: ss8006
-          type: ss
-          server: proxy.gitez.cc
-          port: 8006
-          cipher: aes-256-cfb
-          password: 8006f
-          udp: true
-        - name: ss7006
-          type: ss
-          server: proxy.gitez.cc
-          port: 7006
-          cipher: aes-256-cfb
-          password: 7006f
-          udp: true
+
+      # user: clashsub时传递的url参数,区分不同的订阅者
+      # tag: frontend中使用的tag，用作traffic monitor
+      # 格式为 type:port:remark
+      # clashsub中也使用tag，作为返回的proxy的user
+      # sub: clashsub订阅时只返回为true的元素
+inbounds:
+  shadowsocks:
+    - user: nicof
+      tag: "ss:4000:nicof"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: 90Ad!23
+      udp: true
+      sub: true
+
+    - user: nicof
+      tag: "ss:4100:nicof"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: 90A!23
+      udp: true
+      sub: true
+
+    - user: nico
+      tag: "ss:4001:nico"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: 301b
+      udp: true
+      sub: true
+
+    - user: nico
+      tag: "ss:4101:nico"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: 30s1b
+      udp: true
+      sub: true
+
+    - user: chuan
+      tag: "ss:4002:chuan"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: 3e1b
+      udp: true
+      sub: true
+
+    - user: chuan
+      tag: "ss:4102:chuan"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: o0s1b
+      udp: true
+      sub: true
+  
+    - user: eagle
+      tag: "ss:4003:eagle"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: 3e1b
+      udp: true
+      sub: true
+
+    - user: eagle
+      tag: "ss:4103:eagle"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: o0s1b
+      udp: true
+      sub: true
+
+    - user: wei
+      tag: "ss:4004:wei"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: 3e1b
+      udp: true
+      sub: true
+
+    - user: wei
+      tag: "ss:4104:wei"
+      server: 10.1.2.245
+      cipher: aes-256-cfb
+      password: o0s1b
+      udp: true
+      sub: true
+
+  vmess:
+    - user: eagle
+      tag: "vmess:4010:eagle"
+      server: 10.1.2.245
+      uuid: e2791dbb-f350-4a71-998a-da3b184a1cef
+      alterId: 64
+      network: ws
+      sub: true
+
+  socks5:
+    - user: eagle
+      tag: "socks5:4020:noauth"
+      server: 10.1.2.245
+      udp: true
+      auth: noauth
+      sub: true
+    - user: eagle
+      tag: "socks5:4021:auth"
+      server: 10.1.2.245
+      udp: true
+      auth: password
+      username: usersocks5
+      password: usernopasssocks5
+      sub: true
+
+  http:
+    - user: eagle
+      tag: "http:4030:noauth"
+      server: 10.1.2.245
+      sub: true
+    - user: eagle
+      tag: "http:4031:auth"
+      server: 10.1.2.245
+      username: user2
+      password: usernopass2
+      sub: true
 
 mysql:
   enable: false

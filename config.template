@@ -53,67 +53,61 @@ cfw-bypass:
   - <local>
 cfw-latency-timeout: 5000
 proxies:
-{{- range $index, $ele := .}}
-  - name: {{$ele.Name}}
-    type: {{$ele.Type}}
+{{- range $index, $ele := .Shadowsocks}}
+  - name: "{{$ele.Tag}}"
+    type: ss
     server: {{$ele.Server}}
     port: {{$ele.Port}}
     cipher: {{$ele.Cipher}}
     password: {{$ele.Password}}
     udp: {{$ele.UDP}}
 {{- end}}
-  # - name:  ss1
-    # type: ss
-    # server: .Server
-    # port: .Port
-    # cipher: .Cipher
-    # password: .Password
-    # udp: true
-    # plugin: obfs
-    # plugin-opts:
-    # mode: http
-    # host: b94a935b474f.doload.micsoft.com
-
-  # socks5
-  # - name: "socks5 example"
-  #   type: socks5
-  #   server: server
-  #   port: 443
-  #   username: username
-  #   password: password
-  #   tls: true
-  #   skip-cert-verify: true
-  #   udp: true
-
-  # - name: "http example"
-  #   type: http
-  #   server: server
-  #   port: 443
-  #   username: username
-  #   password: password
-  #   tls: true # https
-  #   skip-cert-verify: true
-  #   sni: custom.com
-
-  # - name: "ssr example"
-  #   type: ssr
-  #   server: server
-  #   port: 443
-  #   cipher: chacha20-ietf
-  #   password: "password"
-  #   obfs: tls1.2_ticket_auth
-  #   protocol: auth_sha1_v4
-  #   obfs-param: domain.tld
-  #   protocol-param: "#"
-  #   udp: true
+{{- range $index, $ele := .Socks5}}
+  - name: "{{$ele.Tag}}"
+    type: socks5
+    server: {{$ele.Server}}
+    port: {{$ele.Port}}
+    udp: {{$ele.UDP}}
+    {{- if $ele.Username}}
+    username: {{$ele.Username}}
+    password: {{$ele.Password}}
+    {{- end}}
+{{- end}}
+{{- range $index, $ele := .Vmess}}
+  - name: "{{$ele.Tag}}"
+    type: vmess
+    server: {{$ele.Server}}
+    port: {{$ele.Port}}
+    uuid: {{$ele.UUID}}
+    alterId: {{$ele.AlterID}}
+    network: {{$ele.Network}}
+{{- end}}
+{{- range $index, $ele := .Http}}
+  - name: "{{$ele.Tag}}"
+    server: {{$ele.Server}}
+    port: {{$ele.Port}}
+    {{- if $ele.Username}}
+    username: {{$ele.Username}}
+    password: {{$ele.Password}}
+    {{- end}}
+{{- end}}
 
 proxy-groups:
   - name: Nexitally
     type: select
     proxies:
       - auto
-{{- range $index, $ele := .}}
-      - {{$ele.Name}}
+{{- range $index, $ele := .Shadowsocks}}
+      - "{{$ele.Tag}}"
+{{- end}}
+{{- range $index, $ele := .Vmess}}
+      - "{{$ele.Tag}}"
+{{- end}}
+{{- range $index, $ele := .Http}}
+      - "{{$ele.Tag}}"
+{{- end}}
+{{- range $index, $ele := .Socks5}}
+      - "{{$ele.Tag}}"
 {{- end}}
 
   - name: auto
@@ -121,8 +115,17 @@ proxy-groups:
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-{{- range $index, $ele := .}}
-      - {{$ele.Name}}
+{{- range $index, $ele := .Shadowsocks}}
+      - {{$ele.User}}
+{{- end}}
+{{- range $index, $ele := .Vmess}}
+      - {{$ele.User}}
+{{- end}}
+{{- range $index, $ele := .Http}}
+      - {{$ele.User}}
+{{- end}}
+{{- range $index, $ele := .Socks5}}
+      - {{$ele.User}}
 {{- end}}
 
   - name:  Apple
